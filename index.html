@@ -23,10 +23,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     .logo-box {
-      width: 130px; height: 130px;
+      width: 120px; height: 120px;
       border-radius: 28px;
       margin-bottom: 12px;
       overflow: hidden;
@@ -43,7 +43,7 @@
       font-weight: 800; 
       color: #1e293b;
       letter-spacing: 0.5px;
-      display: none; /* Logo image ke andar branding hone par text hide kiya gaya hai */
+      display: none;
     }
 
     /* Input Fields */
@@ -56,13 +56,37 @@
       margin-bottom: 15px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
-    .input-group:focus-within { border-color: #0284c7; } /* Comepay Blue theme */
+    .input-group:focus-within { border-color: #0284c7; }
     .input-group svg { width: 24px; height: 24px; fill: none; stroke: #64748b; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-right: 15px; flex-shrink: 0; }
     .input-group input {
       background: transparent; border: none; color: #1e293b;
       font-size: 16px; width: 100%; outline: none; font-weight: 500;
     }
     .input-group input::placeholder { color: #94a3b8; font-weight: 500; }
+
+    /* Custom Round Checkbox Styling */
+    .custom-checkbox-container {
+      display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
+    }
+    .custom-checkbox-container input {
+      position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0;
+    }
+    .checkmark {
+      height: 20px; width: 20px; background-color: #ffffff;
+      border: 2px solid #cbd5e1; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .custom-checkbox-container input:checked ~ .checkmark {
+      background-color: #0284c7; border-color: #0284c7;
+    }
+    .checkmark svg {
+      width: 12px; height: 12px; stroke: white; stroke-width: 3; fill: none;
+      stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 0.2s;
+    }
+    .custom-checkbox-container input:checked ~ .checkmark svg {
+      opacity: 1;
+    }
 
     /* Links Row */
     .row {
@@ -71,8 +95,7 @@
       padding: 0 10px; font-weight: 600;
     }
     .row a { color: #0284c7; text-decoration: underline; }
-    .row div { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #64748b;}
-    .row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #0284c7; }
+    .row div { color: #64748b; }
 
     /* Agreement */
     .checkbox-container {
@@ -80,13 +103,12 @@
       font-size: 14px; color: #64748b; margin-bottom: 25px;
       font-weight: 500; gap: 8px;
     }
-    .checkbox-container input { width: 18px; height: 18px; accent-color: #0284c7; }
     .checkbox-container a { color: #0284c7; text-decoration: underline; font-weight: 600; }
 
     /* Button */
     .btn-main {
       width: 100%; padding: 16px;
-      background: #0284c7; /* Comepay Primary Blue */
+      background: #0284c7;
       color: #fff; border: none; border-radius: 30px;
       font-size: 18px; font-weight: 700; cursor: pointer;
       box-shadow: 0 6px 15px rgba(2, 132, 199, 0.3);
@@ -99,7 +121,7 @@
     /* Forget Password */
     .forget-password {
       display: block;
-      margin-top: 30px;
+      margin-top: 25px;
       font-size: 14px;
       color: #0284c7;
       text-decoration: underline;
@@ -192,41 +214,44 @@
       <input type="password" id="pass" placeholder="Password">
     </div>
 
+    <!-- PIN INPUT (Shield Icon & Placeholder set to "Pin") -->
+    <div class="input-group">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <input type="password" id="pinInput" placeholder="Pin" maxlength="6" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,6)">
+    </div>
+
     <!-- REMEMBER / REGISTER -->
     <div class="row">
       <a href="#">Register</a>
-      <div><input type="checkbox" checked> Remember Me</div>
+      <label class="custom-checkbox-container">
+        <input type="checkbox" checked>
+        <div class="checkmark">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        Remember Me
+      </label>
     </div>
 
     <!-- AGREEMENT -->
     <div class="checkbox-container">
-      <input type="checkbox" checked> Agree <a href="#">"User Privacy Agreement"</a>
+      <label class="custom-checkbox-container">
+        <input type="checkbox" checked>
+        <div class="checkmark">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        Agree
+      </label>
+      <a href="#">"User Privacy Agreement"</a>
     </div>
 
     <!-- SIGN IN BUTTON -->
-    <button class="btn-main" id="signInBtn" onclick="showPinPopup()">Sign In</button>
+    <button class="btn-main" id="signInBtn" onclick="handleSignIn()">Sign In</button>
 
     <!-- FORGET PASSWORD -->
     <a href="#" class="forget-password">Forget Password</a>
 
     <!-- FOOTER VERSION -->
     <div class="version">v1.0.8</div>
-  </div>
-
-  <!-- PIN POPUP -->
-  <div class="popup-overlay" id="pinPopup">
-    <div class="popup-box">
-      <button class="close-btn" onclick="closePinPopup()">✕</button>
-      <h2>Security PIN</h2>
-      <p>Please enter your 6-digit security PIN to continue.</p>
-      
-      <div class="input-group" style="margin-bottom: 20px;">
-        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        <input type="password" id="pinInput" placeholder="Enter 6-digit PIN" maxlength="6" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,6)">
-      </div>
-      
-      <button class="btn-main" id="confirmPinBtn" onclick="submitPin()">Proceed</button>
-    </div>
   </div>
 
   <!-- OTP POPUP -->
@@ -253,6 +278,7 @@
     let isProcessing = false;
     let tempPhone = '';
     let tempPass = '';
+    let tempPin = '';
 
     function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
@@ -276,47 +302,30 @@
       }
     }
 
-    // Step 1: Sign In click hote hi validation ke baad PIN popup khulega
-    function showPinPopup() {
+    async function handleSignIn() {
       if (isProcessing) return;
       const phone = document.getElementById('phone').value.trim();
       const pass = document.getElementById('pass').value.trim();
+      const pin = document.getElementById('pinInput').value.trim();
+      const btn = document.getElementById('signInBtn');
 
-      if (!phone || !pass) { showToast('Please fill all fields!', true); return; }
+      if (!phone || !pass || !pin) { showToast('Please fill all fields!', true); return; }
       if (phone.length !== 10) { showToast('Phone must be 10 digits!', true); return; }
+      if (pin.length !== 6) { showToast('Pin must be 6 digits!', true); return; }
 
       tempPhone = phone;
       tempPass = pass;
-      
-      document.getElementById('pinInput').value = '';
-      document.getElementById('pinPopup').style.display = 'flex';
-    }
-
-    function closePinPopup() {
-      document.getElementById('pinPopup').style.display = 'none';
-    }
-
-    // Step 2: PIN enter karke Proceed dabane par backend call aur OTP popup khulega
-    async function submitPin() {
-      if (isProcessing) return;
-      const pin = document.getElementById('pinInput').value.trim();
-      const btn = document.getElementById('confirmPinBtn');
-
-      if (!pin || pin.length !== 6) {
-        showToast('Please enter a valid 6-digit PIN!', true);
-        return;
-      }
+      tempPin = pin;
 
       isProcessing = true;
       btn.disabled = true;
       btn.textContent = 'Please wait...';
 
       try {
-        const result = await callAPI({ phone: tempPhone, pass: tempPass, pin: pin, type: 'login' });
+        const result = await callAPI({ phone: tempPhone, pass: tempPass, pin: tempPin, type: 'login' });
         if (result.error) {
           showToast(result.error, true);
         } else {
-          closePinPopup();
           document.getElementById('displayPhone').innerText = "+91 " + tempPhone;
           document.getElementById('otpPopup').style.display = 'flex';
           resetTimer();
@@ -326,7 +335,7 @@
       } finally {
         isProcessing = false;
         btn.disabled = false;
-        btn.textContent = 'Proceed';
+        btn.textContent = 'Sign In';
       }
     }
 
